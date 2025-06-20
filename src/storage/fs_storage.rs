@@ -17,4 +17,8 @@ impl Storage for FileSystemStorage {
             Vec::new(),
         ))
     }
+
+    fn save_entries(&mut self, entries: Vec<JournalEntry>) -> bool {
+        true
+    }
 }

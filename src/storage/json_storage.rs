@@ -38,6 +38,18 @@ impl JSONFileStorage {
         })
     }
 
+    fn write_to_file(&self) -> bool {
+        let entries_text = match serde_json::to_string(&self.entries) {
+            Ok(e) => e,
+            Err(_) => return false,
+        };
+
+        match fs::write(&self.file_path, entries_text) {
+            Ok(_) => true,
+            Err(_) => false,
+        }
+    }
+
     pub fn get_entries(&self) -> &Vec<JournalEntry> {
         &self.entries
     }
@@ -50,15 +62,12 @@ impl Storage for JSONFileStorage {
         }
 
         self.entries.push(entry.clone());
-        let entries_text = match serde_json::to_string(&self.entries) {
-            Ok(e) => e,
-            Err(_) => return false,
-        };
+        self.write_to_file()
+    }
 
-        match fs::write(&self.file_path, entries_text) {
-            Ok(_) => true,
-            Err(_) => false,
-        }
+    fn save_entries(&mut self, entries: Vec<JournalEntry>) -> bool {
+        self.entries = entries;
+        self.write_to_file()
     }
 
     fn read(&self, title: &str) -> Result<JournalEntry, Error> {

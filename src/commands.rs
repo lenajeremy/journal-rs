@@ -28,19 +28,26 @@ pub struct SearchArgs {
 
 #[derive(Args, Debug)]
 pub struct DeleteArgs {
-    // what date to delete
-    pub date: String,
+    /// Title of entry(ies) to delet sf
+    #[arg(long)]
+    pub title: String,
+
+    #[arg(long)]
+    pub match_title: bool,
 }
 
 #[derive(Args, Debug)]
 pub struct AddArgs {
     /// The text of the journal entry.
+    #[arg(long)]
     pub text: String,
 
     /// The title of the journal entry.
+    #[arg(long)]
     pub title: String,
 
     /// The categories this entry contains.
+    #[arg(long)]
     pub tags: Vec<String>,
     ///// The date of the journal entry.
     //pub date: Option<String>,

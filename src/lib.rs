@@ -51,20 +51,31 @@ pub fn run() {
             let entry = JournalEntry {
                 title: args.title,
                 text: args.text,
-                tags: vec!["personal".to_string()],
+                tags: args.tags,
                 created_at: Local::now(),
                 updated_at: Local::now(),
             };
             storage.save(&entry);
-
-            println!(
-                "Entry = {:#?}\nEntries = {:#?}",
-                entry,
-                storage.get_entries()
-            );
         }
         Command::Delete(args) => {
-            println!("Deleting {}", args.date);
+            let all_entries: Vec<JournalEntry> = storage
+                .get_entries()
+                .iter()
+                .filter(|x| {
+                    if args.match_title {
+                        *x.title != args.title
+                    } else {
+                        !x.title.to_lowercase().contains(&args.title.to_lowercase())
+                    }
+                })
+                .cloned()
+                .collect();
+
+            if all_entries.len() == storage.get_entries().len() {
+                println!("Didn't delete any item");
+            }
+
+            storage.save_entries(all_entries);
         }
         Command::Search(args) => {
             let query = args.query;
