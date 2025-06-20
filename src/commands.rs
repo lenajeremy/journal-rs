@@ -22,8 +22,13 @@ pub enum Command {
 
 #[derive(Debug, Args)]
 pub struct SearchArgs {
+    /// Query to search for
+    #[arg(long, short)]
     pub query: String,
-    pub search_range: Vec<String>,
+
+    /// Tags to search for
+    #[arg(long)]
+    pub tags: Vec<String>,
 }
 
 #[derive(Args, Debug)]

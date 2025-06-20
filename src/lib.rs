@@ -78,9 +78,33 @@ pub fn run() {
             storage.save_entries(all_entries);
         }
         Command::Search(args) => {
+            fn one<T, F>(list: &Vec<T>, clo: F) -> bool
+            where
+                F: Fn(&T) -> bool,
+            {
+                if list.len() == 0 {
+                    return true;
+                }
+                for t in list {
+                    if clo(t) {
+                        return true;
+                    }
+                }
+                false
+            }
             let query = args.query;
-            let search_range = args.search_range;
-            println!("{}, {:?}", query, search_range)
+            let tags = args.tags;
+
+            let all_entries = storage.get_entries();
+            let search_results = all_entries
+                .iter()
+                .filter(|x| {
+                    x.title.to_lowercase().contains(&query.to_lowercase())
+                        && one(&tags, |tag| x.tags.contains(&tag))
+                })
+                .cloned()
+                .collect::<Vec<JournalEntry>>();
+            println!("{search_results:#?}");
         }
     };
 }
