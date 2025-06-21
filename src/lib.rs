@@ -104,6 +104,7 @@ pub fn run() {
                 })
                 .cloned()
                 .collect::<Vec<JournalEntry>>();
+
             println!("{search_results:#?}");
         }
     };
